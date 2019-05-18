@@ -31,9 +31,10 @@
   "privateKey": "",
   "qqplay": {
     "REMOTE_SERVER_ROOT": "",
-    "orientation": "portrait"
+    "orientation": "portrait",
+    "zip": false
   },
-  "startScene": "d6c7011a-72d2-42af-b61c-c5df48daa15e",
+  "startScene": "5e0fbff6-0139-4705-9c93-b2329571c9fc",
   "title": "template",
   "webOrientation": "auto",
   "wechatgame": {
@@ -42,6 +43,6 @@
     "orientation": "portrait",
     "subContext": "sub"
   },
-  "xxteaKey": "19f21682-630a-4d",
+  "xxteaKey": "d252d38c-3267-45",
   "zipCompressJs": true
 }
