@@ -1,10 +1,9 @@
-import utils from './utils/utils'
-import WeChat from './utils/wechat'
-import Global from './Global';
+import Global from "./Modules/Global";
+import WeChat from "./Modules/wechat";
 
 const { ccclass, property } = cc._decorator;
 
-@ccclass
+@ccclass()
 export default class Load extends cc.Component {
 
     /** 加载文字 */
@@ -12,14 +11,14 @@ export default class Load extends cc.Component {
         type: cc.Label,
         displayName: '加载文字' 
     })
-    text: cc.Label = null;
+    private text: cc.Label = null;
 
     /** 加载进度条 */
     @property({ 
         type: cc.Node,
         displayName: '加载进度条' 
     })
-    line: cc.Node = null;
+    private line: cc.Node = null;
 
     // LIFE-CYCLE CALLBACKS:
 

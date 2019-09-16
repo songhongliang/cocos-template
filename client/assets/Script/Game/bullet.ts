@@ -1,33 +1,33 @@
-import Global from "../Global";
+import Global from "../Modules/Global";
 
 const { ccclass, property } = cc._decorator;
 
-@ccclass
+@ccclass()
 export default class Bullet extends cc.Component {
     /** 子弹速度 */
     @property({
         displayName: '子弹速度',
     })
-    speed: number = 800;
+    private speed: number = 800;
 
     /** 子弹旋转角度 */
     @property({
         displayName: '子弹旋转角度',
     })
-    angle: number = 0;
+    private angle: number = 0;
 
     /** 发射 */
-    launch: boolean = false;
+    private launch: boolean = false;
 
     /** 节点回收范围  */
-    range = {w: 0, h: 0}
+    private range = {w: 0, h: 0}
 
     /** 初始化 */
-    init() {
+    private init() {
         /** 发射点 */
         let size = 80;
         /** 发射的炮台 */
-        let node = Global.Game.batteryNode;
+        let node = Global.Game.batteryNode; 
         this.node.angle = this.angle = node.angle;
         /** 转换成自己的坐标 */
         let pos = cc.v2(node.x - size * Math.sin(this.angle / 180 * 3.14), node.y + size * Math.cos(this.angle / 180 * 3.14));
@@ -52,7 +52,7 @@ export default class Bullet extends cc.Component {
 
     // start () {}
 
-    update (dt) {
+    update (dt: number) {
         if (!this.launch) return;
 
         this.node.x -= dt * this.speed * Math.sin(this.angle / 180 * 3.14);
@@ -63,14 +63,14 @@ export default class Bullet extends cc.Component {
         
         if (intersects) {
             this.launch = false;
-            Global.Game.bulletPool.put(this.node);
+            Global.Game.putBullet(this.node);
             return Global.Game.setBoxColor();
             // return cc.log('子弹击中白色盒子');
         }
 
         if (this.node.x > this.range.w || this.node.x < -this.range.w || this.node.y > this.range.h || this.node.y < -this.range.h) {
             this.launch = false;
-            Global.Game.bulletPool.put(this.node);
+            Global.Game.putBullet(this.node);
         }
     }
 }

@@ -149,7 +149,7 @@ export default class wxcontrol extends wxnetwork {
     private successReward: Function = function () { };
 
     /** 微信 onshow 不定义就不监听 */
-    public onShow: Function = function(res?: any) { }
+    public onShow: (res: any) => void = function(res) { }
 
     /** 微信 onhide 不定义就不监听 */
     public onHide: Function = function () { }

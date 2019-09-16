@@ -1,44 +1,44 @@
-import Global from '../Global'
-import utils from '../utils/utils';
-import WeChat from '../utils/wechat';
+import Global from "../Modules/Global";
+import WeChat from "../Modules/wechat";
+import utils from "../Modules/utils";
 
 const { ccclass, property } = cc._decorator;
 
-@ccclass
+@ccclass()
 export default class Main extends cc.Component {
     /** 移动的物体 */
     @property(cc.Node)
-    ball: cc.Node = null;
+    public ball: cc.Node = null;
 
     /** 炮台 */
     @property(cc.Node)
-    batteryNode: cc.Node = null;
+    public batteryNode: cc.Node = null;
 
     /** 子弹预制体 */
     @property(cc.Prefab)
-    bulletPrefab: cc.Prefab = null;
+    protected bulletPrefab: cc.Prefab = null;
 
     /** 加载框 */
     @property(cc.Prefab)
-    loadingBox: cc.Prefab = null;
+    public loadingBox: cc.Prefab = null;
 
     /** 子弹对象池 */
-    bulletPool: cc.NodePool = null;
+    private readonly bulletPool: Array<cc.Node> = [];
 
     /** 速度状态 */
-    sppedState: boolean = false;
+    protected sppedState: boolean = false;
 
     /** 速度倍数 */
-    speed: number = 1;
+    protected speed: number = 1;
 
     /** 缓动系数 */
-    value: number = 30;
+    protected value: number = 30;
 
     /** 排行榜 */
-    rankBox: cc.Node = null;
+    public rankBox: cc.Node = null;
 
-    // 打开排行榜
-    openRank() {
+    /** 打开排行榜 */
+    public openRank() {
         if (this.rankBox) {
             this.rankBox.active = true;
         } else {
@@ -50,46 +50,54 @@ export default class Main extends cc.Component {
     }
 
     /** 分享或者看视频 */
-    testShare() {
+    public testShare() {
         WeChat.getReward(function () {
             console.log('领取成功!!!!!');
         }, 'xxx');
     }
 
     /** 设置 ball 颜色 */
-    setBoxColor() {
+    public setBoxColor() {
         let color = {
-            r: Math.floor(255 * Math.random()) + 1,
+            r: Math.floor(255 * Math.random()) + 1,  
             g: Math.floor(255 * Math.random()) + 1,
             b: Math.floor(255 * Math.random()) + 1
         }
         // this.ball.color = new cc.color(color);
-        this.ball.color = cc.color(color.r, color.g, color.b);
+        const image = cc.find('image', this.ball);
+        image.color = cc.color(color.r, color.g, color.b);
     }
 
     /** 从对象池获取子弹 */
-    getBullet() {
-        let bullet = null;
-        if (this.bulletPool.size() > 0) {
-            bullet = this.bulletPool.get();
+    public getBullet() {
+        let bullet: cc.Node = null;
+        if (this.bulletPool.length > 0) {
+            bullet = this.bulletPool.shift();
         } else {
             bullet = cc.instantiate(this.bulletPrefab);
         }
-        bullet.parent = this.node;
-        // return bullet;
+        return bullet;
+    }
+
+    /**
+     * 回收子弹节点到对象池中
+     * @param bullet 子弹节点
+     */
+    public putBullet(bullet: cc.Node) {
+        bullet.removeFromParent(false);
+        this.bulletPool.push(bullet);
     }
 
     /** 创建子弹对象池 */
-    createPool() {
-        this.bulletPool = new cc.NodePool();
+    private createBulletPool() {
         for (let i = 0; i < 10; i++) {
             let bullet = cc.instantiate(this.bulletPrefab);
-            this.bulletPool.put(bullet);
+            this.bulletPool.push(bullet);
         }
     }
 
     /** 发射 */
-    launch(event) {
+    public launch(event) {
         // console.log(event, event.touch, event.touch._point);
 
         /** 点击的坐标位置 */
@@ -124,18 +132,18 @@ export default class Main extends cc.Component {
         this.batteryNode.angle = angle;
         // console.log(angle);
 
-        this.getBullet();
+        const bullet = this.getBullet();
+        bullet.parent = this.node;
     }
 
     /** 初始化子弹发射 */
-    initLaunch() {
-        this.createPool();
+    private initLaunch() {
         this.node.on('touchstart', this.launch, this);
         this.node.on('touchmove', this.launch, this);
     }
 
     /** 速度切换 */
-    speedSwitch() {
+    public speedSwitch() {
         if (this.sppedState) {
             this.sppedState = false;
             this.speed = 1;
@@ -145,8 +153,8 @@ export default class Main extends cc.Component {
         }
     }
 
-    // 加速
-    accelerate() {
+    /** 加速 */
+    public accelerate() {
         this.speed = 2;
     }
 
@@ -154,12 +162,14 @@ export default class Main extends cc.Component {
 
     onLoad() {
         Global.Game = this;
+        this.createBulletPool();
         this.initLaunch();
         utils.setLoadingBox(cc.instantiate(this.loadingBox), this.node);
+        // window['bulletPool'] = this.bulletPool;
     }
 
     start() {
-
+        
         // 设置 onshow 监听
         WeChat.onShow = res => {
 
@@ -171,7 +181,7 @@ export default class Main extends cc.Component {
         }
     }
 
-    update(dt) {
+    update(dt: number) {
         if (!this.ball) return;
         this.value -= 1 * this.speed;
         this.ball.y += this.value * this.speed;
@@ -179,5 +189,7 @@ export default class Main extends cc.Component {
             this.ball.y = -500;
             this.value = 30;
         }
+        // 自定义的圆角遮罩，只在 onEnable 时更新视图，这里每一帧都变化，所以要重绘
+        this.ball.getComponent('TheRectMask').drawRadius();
     }
 }

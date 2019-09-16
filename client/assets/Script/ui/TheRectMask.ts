@@ -1,12 +1,15 @@
 const { ccclass, property, menu, requireComponent, disallowMultiple, executeInEditMode } = cc._decorator;
 
+cc.macro.ENABLE_WEBGL_ANTIALIAS = true;
+
 /** UI 矩形圆角遮罩 */
-@ccclass
-@disallowMultiple   // 防止节点添加重复组件
-@executeInEditMode  // 在编辑器里执行
-@menu('自定义组件/矩形圆角遮罩')
+@ccclass()
+@disallowMultiple()   
+@executeInEditMode() 
 @requireComponent(cc.Mask)
-export default class RectMask extends cc.Component {
+@menu('自定义组件/矩形圆角遮罩')
+export default class TheRectMask extends cc.Component {
+
     /** 圆角半径 */
     @property({ visible: false })
     private radius: number = 20;
@@ -15,6 +18,7 @@ export default class RectMask extends cc.Component {
     @property({ visible: false })
     private size: cc.Vec2 = new cc.Vec2();
 
+    /** 圆角半径 */
     @property({ displayName: '圆角半径' })
     protected get boxRadius(): number {
         return this.radius;
@@ -51,20 +55,20 @@ export default class RectMask extends cc.Component {
 
     /**
      * 绘制圆角矩形
-     * @param {cc.Graphics} graphics 
-     * @param {cc.Rect} rect 
+     * @param graphics 
+     * @param rect 
      */
     private drawRoundRect(graphics: cc.Graphics, rect: cc.Rect) {
         let { x, y, width, height } = rect;
-        //清空所有路径
+        // 清空所有路径
         graphics.clear();
-        //线条宽度
+        // 线条宽度
         graphics.lineWidth = 1;
-        //矩形
+        // 矩形
         graphics.roundRect(x, y, width, height, this.radius);
-        //填充
+        // 填充
         graphics.fill();
-        //绘制
+        // 绘制
         graphics.stroke();
     }
 

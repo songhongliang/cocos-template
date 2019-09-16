@@ -1,12 +1,10 @@
-import Global from "../Global";
-
 const { ccclass, property, menu, requireComponent } = cc._decorator;
 
 /** UI 按钮 */
-@ccclass
+@ccclass()
 @menu('自定义组件/按钮')
 @requireComponent(cc.Button)
-export default class UiButton extends cc.Component {
+export default class TheButton extends cc.Component {
 
     @property({ displayName: '摁下去缩放值' })
     private touchScale: number = 0.85;
@@ -29,14 +27,14 @@ export default class UiButton extends cc.Component {
     /** 按钮初始化缩放值 */
     private initScale: number = null;
 
-    // 点击动画
-    private clickMove() {
+    /** 点击动画 */
+    protected clickMove() {
         this.node.stopAllActions();
         let seq = cc.sequence(cc.scaleTo(0.1, 1.1, 1.1), cc.scaleTo(0.1, 0.8, 0.8), cc.scaleTo(0.1, 1.2, 1.2), cc.scaleTo(0.1, 1, 1));
         this.node.runAction(seq);
     }
 
-    private onTouchDown() {
+    protected onTouchDown() {
         // cc.log('摁下');
         if (this.isGray) {
             this.node.color = cc.color(140, 140, 140);
@@ -47,7 +45,7 @@ export default class UiButton extends cc.Component {
         }
     }
 
-    private onTouchUp() {
+    protected onTouchUp() {
         // cc.log('松开');
         if (this.isGray) {
             this.node.color = cc.color(255, 255, 255);

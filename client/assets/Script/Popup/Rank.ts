@@ -1,10 +1,10 @@
-import Alert from "./Alert";
-import utils from "../utils/utils";
+import Popup from "./Base";
+import utils from "../Modules/utils";
 
 const { ccclass, property } = cc._decorator;
 
-@ccclass
-export default class Rank extends Alert {
+@ccclass()
+export default class Rank extends Popup {
 
     @property({ type: cc.WXSubContextView, displayName: '子域容器' })
     private subBox: cc.WXSubContextView = null;

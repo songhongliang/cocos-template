@@ -47,7 +47,7 @@ class utilsModule {
      */
     public timeFormat(num = 0) {
         let date: Date, month: string, day: string, hour: string, minute: string, second: string, time: string;
-        date = new Date(new Date().getTime() + (num * 24 * 3600 * 1000));
+        date = new Date(Date.now() + (num * 24 * 3600 * 1000));
         month = ('0' + (date.getMonth() + 1)).slice(-2);
         day = ('0' + date.getDate()).slice(-2);
         hour = ('0' + date.getHours()).slice(-2);
@@ -91,8 +91,8 @@ class utilsModule {
      * @param now 对比的时间
      * @param before 之前的时间
      */
-    public getSecond(now: string, before: string): number {
-        let second = (new Date(now).getTime() - new Date(before).getTime()) / 1000;
+    public getSecond(now: Date, before: Date): number {
+        let second = (now.getTime() - before.getTime()) / 1000;
         return Math.floor(second);
     }
 
@@ -144,7 +144,7 @@ class utilsModule {
      * @param min 最小数
      * @param max 最大数
      */
-    public ranInt(min: number, max: number): number {
+    public ranInt(min: number, max: number) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
@@ -153,11 +153,11 @@ class utilsModule {
      * @param {array} arr 数组
      * @param count 元素个数
      */
-    public getRandomArrayElements(array: any[], count: number): any[] {
+    public getRandomArrayElements<T>(array: Array<T>, count: number) {
         /** 数组长度 */
         let length = array.length;
         /** 最小长度 */
-        let min = length - count, temp, range;
+        let min = length - count, temp: T, range: number;
         while (length-- > min) {
             range = Math.floor((length + 1) * Math.random());
             temp = array[range];
@@ -171,9 +171,15 @@ class utilsModule {
      * 随机打乱数组
      * @param array
      */
-    public shuffleArray(array: any[]): any[] {
-        let random = (a: any, b: any) => Math.random() > 0.5 ? -1 : 1;
-        return array.sort(random);
+    public shuffleArray<T>(array: Array<T>) {
+        // 洗牌随机法（性能最优）
+        for (let i = array.length - 1; i >= 0; i--) {
+            let randomIndex = Math.floor(Math.random() * (i + 1));
+            let itemAtIndex = array[randomIndex];
+            array[randomIndex] = array[i];
+            array[i] = itemAtIndex;
+        }
+        return array;
     }
 
     /**
@@ -181,7 +187,7 @@ class utilsModule {
      * @param array 改数组
      * @param index 元素索引
      */
-    public zIndexToTop(array: any[], index: number) {
+    public zIndexToTop<T>(array: Array<T>, index: number) {
         if (index != 0) {
             let item = array[index];
             array.splice(index, 1);
@@ -196,7 +202,7 @@ class utilsModule {
      * @param array 改数组
      * @param index 元素索引
      */
-    public zIndexToBottom(array: any[], index: number) {
+    public zIndexToBottom<T>(array: Array<T>, index: number) {
         if (index != array.length - 1) {
             let item = array[index];
             array.splice(index, 1);
@@ -268,9 +274,9 @@ class utilsModule {
     /**
      * 基础加载预制体
      * @param name 资源名字
-     * @param callback 回调
+     * @param callback 加载成功回调
      */
-    public loadPrefab(name: string, callback: Function = null) {
+    public loadPrefab(name: string, callback?: (result: any) => void) {
         this.loading_box.active = true;
         this.loading_text.string = '0%';
         cc.loader.loadRes('prefab/' + name, cc.Prefab, (count, total, item) => {
@@ -285,19 +291,19 @@ class utilsModule {
     }
 
     /**
-     * 图片加载 resources文件下
+     * 图片加载 resources 文件下
      * @param node 节点
      * @param src 路径
-     * @param callback 回调  
+     * @param callback 加载成功回调  
      */
-    public loadImg(node: cc.Node = null, src: string, callback?: Function) {
+    public loadImg(node: cc.Node = null, src: string, callback?: (result: any) => void) {
         let load_count = 0;
         /** 加载失败时，重复加载 直到次数为 3 */
         function load() {
             load_count += 1;
             cc.loader.loadRes(src, cc.SpriteFrame, (err, res) => {
                 if (err) {
-                    console.log('图片加载错误重复加载次数 >>', load_count);
+                    console.log(node.name + '加载次数', load_count);
                     if (load_count < 3) load();
                 } else {
                     if (node) node.getComponent(cc.Sprite).spriteFrame = res;

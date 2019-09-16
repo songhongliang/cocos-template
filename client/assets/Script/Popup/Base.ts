@@ -1,19 +1,20 @@
 
 const {ccclass, property} = cc._decorator;
-/** 弹出层 基类*/
-@ccclass
-export default class Alert extends cc.Component {
+
+/** 弹出层（基类） */
+@ccclass()
+export default class Popup extends cc.Component {
 
     /** 中间弹出层 */
     @property({ type: cc.Node, displayName: '中间弹出层' })
-    popBox: cc.Node = null;
+    protected popBox: cc.Node = null;
 
     /** 旋转光环 */
     @property({ type: cc.Node, displayName: '旋转光环' })
-    ringNode: cc.Node = null;
+    protected ringNode: cc.Node = null;
 
     /** 关闭当前组件节点 */
-    close() {
+    public close() {
         this.node.active = false;
     }
 
@@ -21,7 +22,7 @@ export default class Alert extends cc.Component {
      * 出现动画 弹框式
      * @param {cc.Node} node 默认是 this.popBox
      */
-    showMove(node: cc.Node = null) {
+    public showMove(node: cc.Node = null) {
         let content = node ? node : this.popBox;
         content.stopAllActions();
         content.setScale(0.5);
@@ -39,7 +40,7 @@ export default class Alert extends cc.Component {
      * @param {cc.Node} node 滑动的节点
      * @param {number} width 滑动的宽度
      */
-    slideMove(node: cc.Node, width: number) {
+    public slideMove(node: cc.Node, width: number) {
         node.stopAllActions();
         node.x = width;
         let action = cc.moveTo(0.3, 0, -41);
@@ -51,7 +52,7 @@ export default class Alert extends cc.Component {
      * 光环动画
      * @param {cc.Node} node 默认是 this.popBox
      */
-    ringMove(node: cc.Node = null) {
+    public ringMove(node: cc.Node = null) {
         let ring = node ? node : this.ringNode;
         ring.runAction(cc.repeatForever(
             cc.sequence(
