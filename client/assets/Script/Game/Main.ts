@@ -2,9 +2,10 @@ import Global from "../Modules/Global";
 import WeChat from "../Modules/wechat";
 import utils from "../Modules/utils";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, menu } = cc._decorator;
 
 @ccclass()
+@menu('Game/主程序')
 export default class Main extends cc.Component {
     /** 移动的物体 */
     @property(cc.Node)

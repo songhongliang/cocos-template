@@ -1,8 +1,9 @@
 import Global from "../Modules/Global";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, menu } = cc._decorator;
 
 @ccclass()
+@menu('Game/子弹脚本')
 export default class Bullet extends cc.Component {
     /** 子弹速度 */
     @property({
