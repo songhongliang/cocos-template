@@ -216,8 +216,8 @@ class utilsModule {
 
     /**
      * 返回旋转角度 旋转的节点坐标必须为(0, 0)才可以 所以要相对应的进行转换
-     * @param x 点击的坐标位置 x
-     * @param y 点击的坐标位置 y
+     * @param x 目标坐标 x
+     * @param y 目标坐标 y
      */
     public rotateAngle(x: number, y: number) {
         if (y === 0) {
@@ -241,14 +241,11 @@ class utilsModule {
         let rate = Math.atan(Math.abs(x) / Math.abs(y));
         if (x > 0 && y > 0) {
             return 360 - 180 * rate / Math.PI;
-        }
-        else if (x > 0 && y < 0) {
+        } else if (x > 0 && y < 0) {
             return 180 + 180 * rate / Math.PI;
-        }
-        else if (x < 0 && y < 0) {
+        } else if (x < 0 && y < 0) {
             return 180 - 180 * rate / Math.PI;
-        }
-        else if (x < 0 && y > 0) {
+        } else if (x < 0 && y > 0) {
             return 180 * rate / Math.PI;
         }
     }

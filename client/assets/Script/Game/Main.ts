@@ -15,6 +15,9 @@ export default class Main extends cc.Component {
     @property(cc.Node)
     public batteryNode: cc.Node = null;
 
+    @property(cc.Node)
+    public targetNode: cc.Node = null;
+
     /** 子弹预制体 */
     @property(cc.Prefab)
     protected bulletPrefab: cc.Prefab = null;
@@ -98,26 +101,25 @@ export default class Main extends cc.Component {
     }
 
     /** 发射 */
-    public launch(event) {
+    private launch(event: any) {
         // console.log(event, event.touch, event.touch._point);
-
         /** 点击的坐标位置 */
-        let click_size = this.node.convertToNodeSpaceAR(event.touch._point);
+        let clickPosition = this.node.convertToNodeSpaceAR(event.touch._point);
         /** 旋转目标节点位置 */
-        let node_size = this.batteryNode.getPosition();
+        let nodePosition = this.batteryNode.getPosition();
         /** 弧度 */
         let radian = 0;
         /** 角度 */
         let angle = 0;
 
         // 方法一：
-        if (click_size.y < node_size.y) {
+        if (clickPosition.y < nodePosition.y) {
             // 炮台向下
-            radian = Math.atan((click_size.x - node_size.x) / (node_size.y - click_size.y));
+            radian = Math.atan((clickPosition.x - nodePosition.x) / (nodePosition.y - clickPosition.y));
             angle = radian * 180 / Math.PI + 180;
         } else {
             // 炮台向上
-            radian = Math.atan((node_size.x - click_size.x) / (click_size.y - node_size.y));
+            radian = Math.atan((nodePosition.x - clickPosition.x) / (clickPosition.y - nodePosition.y));
             angle = radian * 180 / Math.PI;
         }
 
@@ -125,9 +127,9 @@ export default class Main extends cc.Component {
          * 方法二：
          * 只有旋转节点坐标为(0, 0)才生效 所以要做下坐标偏移
         */
-        // click_size.x = click_size.x - node_size.x;
-        // click_size.y = click_size.y - node_size.y;
-        // angle = utils.rotateAngle(click_size.x, click_size.y);
+        // clickPosition.x = clickPosition.x - nodePosition.x;
+        // clickPosition.y = clickPosition.y - nodePosition.y;
+        // angle = utils.rotateAngle(clickPosition.x, clickPosition.y);
 
         // 最后节点角度旋转
         this.batteryNode.angle = angle;
@@ -159,6 +161,38 @@ export default class Main extends cc.Component {
         this.speed = 2;
     }
 
+    /** 初始目标位置 */
+    private initTargetNode() {
+        const left = this.node.width / 2 - this.targetNode.width / 2 - 10;
+        const top = this.node.height / 2 -  this.targetNode.height / 2 - 10;
+        const positionList = [
+            {
+                x: left,
+                y: top
+            }, {
+                x: left,
+                y: -top
+            }, {
+                x: -left,
+                y: top
+            }, {
+                x: -left,
+                y: -top
+            }
+        ]
+
+        this.targetNode.runAction(
+            cc.repeatForever(
+                cc.sequence(
+                    cc.moveTo(2, cc.v2(positionList[0])),
+                    cc.moveTo(2, cc.v2(positionList[2])),
+                    cc.moveTo(2, cc.v2(positionList[3])),
+                    cc.moveTo(2, cc.v2(positionList[1])),
+                )
+            )
+        );
+    }
+
     // LIFE-CYCLE CALLBACKS:
 
     onLoad() {
@@ -167,6 +201,7 @@ export default class Main extends cc.Component {
         this.initLaunch();
         utils.setLoadingBox(cc.instantiate(this.loadingBox), this.node);
         // window['bulletPool'] = this.bulletPool;
+        this.initTargetNode();
     }
 
     start() {

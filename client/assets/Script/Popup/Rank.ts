@@ -1,9 +1,10 @@
 import Popup from "./Base";
 import utils from "../Modules/utils";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, menu } = cc._decorator;
 
 @ccclass()
+@menu('Popup/排行榜')
 export default class Rank extends Popup {
 
     @property({ type: cc.WXSubContextView, displayName: '子域容器' })
