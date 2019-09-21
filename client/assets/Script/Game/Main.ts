@@ -1,4 +1,4 @@
-import Global from "../Modules/Global";
+import Global from "../Global";
 import WeChat from "../Modules/wechat";
 import utils from "../Modules/utils";
 

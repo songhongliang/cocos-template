@@ -1,4 +1,4 @@
-import Global from "../Modules/Global";
+import Global from "../Global";
 
 const { ccclass, property, menu } = cc._decorator;
 

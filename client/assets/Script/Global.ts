@@ -1,4 +1,4 @@
-import Main from "../Game/Main";
+import Main from "./Game/Main";
 
 // class GlobalModule {
 //     private constructor() { 
