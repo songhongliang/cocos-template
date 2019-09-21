@@ -1,11 +1,9 @@
 import Global from "../Global";
-import utils from "../Modules/utils";
 
 const { ccclass, property, menu } = cc._decorator;
 
-/** 追踪目标 */
 @ccclass()
-@menu('Game/追踪脚本')
+@menu('Game/轨道式追踪目标')
 export default class TrackFollow extends cc.Component {
 
     /** 移动速度 */
