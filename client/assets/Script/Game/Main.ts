@@ -88,7 +88,7 @@ export default class Main extends cc.Component {
      * @param bullet 子弹节点
      */
     public putBullet(bullet: cc.Node) {
-        bullet.removeFromParent(false);
+        bullet.removeFromParent(true);
         this.bulletPool.push(bullet);
     }
 
