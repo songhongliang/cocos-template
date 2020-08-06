@@ -300,6 +300,7 @@ export default class wxcontrol extends wxnetwork {
         }).catch(err => {
             this.has_video = false;
             this.video_playing = false;
+            this.videoAd.offClose(callback); // 这里要取消监听
             this.showAlert(err.errMsg, '视频广告出错');
         });
     }
